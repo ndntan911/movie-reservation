@@ -41,12 +41,12 @@ export class MoviesService {
       .createQueryBuilder('movie')
       .leftJoinAndSelect('movie.category', 'category')
       .leftJoinAndSelect('movie.poster', 'poster')
+      .leftJoinAndSelect('movie.showtimes', 'showtime')
       .select([
         'movie.id',
         'movie.title',
         'movie.description',
         'movie.poster',
-        'movie.showtime',
         'movie.seats',
         'movie.price',
         'movie.reservs',
@@ -55,6 +55,8 @@ export class MoviesService {
         'category.name',
         'poster.id',
         'poster.url',
+        'showtime.id',
+        'showtime.time',
       ]);
 
     filter.category &&
@@ -96,12 +98,12 @@ export class MoviesService {
       .createQueryBuilder('movie')
       .leftJoinAndSelect('movie.poster', 'poster')
       .leftJoinAndSelect('movie.category', 'category')
+      .leftJoinAndSelect('movie.showtimes', 'showtime')
       .where('movie.id = :id', { id })
       .select([
         'movie.id',
         'movie.title',
         'movie.description',
-        'movie.showtime',
         'movie.seats',
         'movie.reservs',
         'movie.price',
@@ -112,6 +114,8 @@ export class MoviesService {
         'poster.url',
         'poster.cloudId',
         'poster.format',
+        'showtime.id',
+        'showtime.time',
       ])
       .getOne();
 

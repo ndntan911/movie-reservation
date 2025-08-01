@@ -1,11 +1,13 @@
 import { Category } from 'src/modules/category/entities/category.entity';
 import { Media } from 'src/modules/media/entities/media.entity';
+import { Showtime } from 'src/modules/showtime/entities/showtime.entity';
 import {
   Column,
   CreateDateColumn,
   Entity,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
@@ -26,8 +28,10 @@ export class Movie {
   @Column()
   description: string;
 
-  @Column()
-  showtime: Date;
+  @OneToMany(() => Showtime, (showtime) => showtime.movie, {
+    cascade: true,
+  })
+  showtimes: Showtime[];
 
   @ManyToOne(() => Category, (category) => category.movies, {
     onDelete: 'SET NULL',

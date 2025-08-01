@@ -13,6 +13,7 @@ import { OrderModule } from './modules/order/order.module';
 import { EmailsModule } from './modules/emails/emails.module';
 import { SchedulingModule } from './modules/scheduling/scheduling.module';
 import { SupabaseModule } from './modules/supabase/supabase.module';
+import { ShowtimeModule } from './modules/showtime/showtime.module';
 
 @Module({
   imports: [
@@ -33,6 +34,7 @@ import { SupabaseModule } from './modules/supabase/supabase.module';
     CategoryModule,
     MediaModule,
     SupabaseModule,
+    ShowtimeModule,
     ReservatModule,
     PaymentModule,
     OrderModule,

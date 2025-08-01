@@ -45,7 +45,7 @@ export class OrderService {
 
     // check if movis show time is't time out
     const currentDate = Date.now();
-    const showtime = movie.showtime.getTime();
+    const showtime = movie.showtimes[0].time.getTime();
     if (showtime < currentDate) throw new GoneException('rwservat is time out');
 
     const avilableSeats = movie.seats - movie.reservs;
