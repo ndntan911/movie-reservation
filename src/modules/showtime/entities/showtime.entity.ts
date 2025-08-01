@@ -23,6 +23,15 @@ export class Showtime {
   @JoinColumn({ name: 'movieId' })
   movie: Movie;
 
+  @Column()
+  price: number;
+
+  @Column()
+  seats: number;
+
+  @Column({ default: 0 })
+  reservedSeats: number;
+
   @CreateDateColumn()
   createdAt: Date;
 

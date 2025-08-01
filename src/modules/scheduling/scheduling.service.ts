@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { ReservatService } from '../reservat/reservat.service';
+import { ReservationService } from '../reservation/reservation.service';
 import schedule from 'node-schedule';
 import { EmailsService } from '../emails/emails.service';
 import { NotifyReservatTemp } from '../emails/templates/notify-reservat.templete';
@@ -7,7 +7,7 @@ import { NotifyReservatTemp } from '../emails/templates/notify-reservat.templete
 @Injectable()
 export class SchedulingService {
   constructor(
-    private readonly reservatService: ReservatService,
+    private readonly reservatService: ReservationService,
     private readonly emailsService: EmailsService,
   ) {}
   async commingMovie() {
@@ -17,7 +17,7 @@ export class SchedulingService {
       const showtime = this.getUtcDate(new Date());
       showtime.setHours(showtime.getHours() + 1);
 
-      const reservats = await this.reservatService.findAllOfUssers(
+      const reservats = await this.reservatService.findAllOfUsers(
         showtime,
         currentDate,
       );

@@ -10,7 +10,7 @@ import Stripe from 'stripe';
 import { OrderService } from '../order/order.service';
 import { JwtPayload } from '../auth/dto/jwt-payload.dto';
 import { OrderStatus } from '../order/enums/order-status.enum';
-import { ReservatService } from '../reservat/reservat.service';
+import { ReservationService } from '../reservation/reservation.service';
 import { EmailsService } from '../emails/emails.service';
 import { SucccessPaymentTemp } from '../emails/templates/success-payment.template';
 
@@ -20,13 +20,13 @@ export class PaymentService {
   constructor(
     @Inject(forwardRef(() => OrderService))
     private readonly orderService: OrderService,
-    private readonly reservatService: ReservatService,
+    private readonly reservationService: ReservationService,
     private readonly emailsService: EmailsService,
   ) {}
 
   async pay(orderId: string, user: JwtPayload) {
     const order = await this.orderService.findOne(orderId, user.id);
-    if (order.status === OrderStatus.SUCCESSED)
+    if (order.status === OrderStatus.SUCCEED)
       throw new BadRequestException('this order already payed');
 
     const create = await this.stripe.paymentIntents.create({
@@ -110,9 +110,9 @@ export class PaymentService {
     );
 
     // create reservat
-    const reservat = await this.reservatService.create(
+    const reservat = await this.reservationService.create(
       {
-        movieId: order.movieId,
+        movieId: order.movie.id,
         seats: order.seats,
       },
       metadata.userId,
@@ -120,8 +120,8 @@ export class PaymentService {
 
     // update order staus
     await this.orderService.update(metadata.orderId, {
-      status: OrderStatus.SUCCESSED,
-      reservatId: reservat.id,
+      status: OrderStatus.SUCCEED,
+      reservationId: reservat.id,
     });
 
     // send email to user
@@ -130,7 +130,7 @@ export class PaymentService {
       subject: 'success payment',
       html: SucccessPaymentTemp(
         metadata.orderId,
-        reservat.movieId,
+        reservat.movie.id,
         reservat.seats,
       ),
     });

@@ -8,7 +8,7 @@ import { Order } from './entities/order.entity';
 import { OrderStatus } from './enums/order-status.enum';
 import { Movie } from '../movies/entities/movie.entity';
 import { User } from '../users/entities/user.entity';
-import { Reservat } from '../reservat/entities/reservat.entity';
+import { Reservat } from '../reservation/entities/reservation.entity';
 import { DeleteResult, Repository } from 'typeorm';
 import { getRepositoryToken } from '@nestjs/typeorm';
 

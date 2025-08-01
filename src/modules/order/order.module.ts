@@ -5,14 +5,14 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Order } from './entities/order.entity';
 import { MoviesModule } from '../movies/movies.module';
 import { PaymentModule } from '../payment/payment.module';
-import { ReservatModule } from '../reservat/reservat.module';
+import { ReservationModule } from '../reservation/reservation.module';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([Order]),
     MoviesModule,
     forwardRef(() => PaymentModule),
-    ReservatModule,
+    ReservationModule,
   ],
   controllers: [OrderController],
   providers: [OrderService],

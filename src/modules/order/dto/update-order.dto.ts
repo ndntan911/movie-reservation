@@ -14,5 +14,5 @@ export class UpdateOrderDto extends PartialType(CreateOrderDto) {
 
   @IsString()
   @IsOptional()
-  reservatId?: string;
+  reservationId?: string;
 }

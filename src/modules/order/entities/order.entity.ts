@@ -8,9 +8,10 @@ import {
   ManyToOne,
   OneToOne,
   PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 import { OrderStatus } from '../enums/order-status.enum';
-import { Reservat } from 'src/modules/reservat/entities/reservat.entity';
+import { Reservation } from 'src/modules/reservation/entities/reservation.entity';
 
 @Entity()
 export class Order {
@@ -18,22 +19,16 @@ export class Order {
   id: string;
 
   @ManyToOne(() => User, {
-    createForeignKeyConstraints: false,
     onDelete: 'CASCADE',
   })
+  @JoinColumn({ name: 'userId' })
   user: User;
 
-  @Column()
-  userId: string;
-
   @ManyToOne(() => Movie, {
-    createForeignKeyConstraints: false,
     onDelete: 'CASCADE',
   })
+  @JoinColumn({ name: 'movieId' })
   movie: Movie;
-
-  @Column()
-  movieId: string;
 
   @Column({ enum: OrderStatus, default: OrderStatus.PENDING })
   status: OrderStatus;
@@ -47,16 +42,15 @@ export class Order {
   @Column()
   seats: number;
 
-  @OneToOne(() => Reservat, {
-    createForeignKeyConstraints: false,
+  @OneToOne(() => Reservation, {
     onDelete: 'CASCADE',
   })
-  @JoinColumn()
-  reservat: Reservat;
-
-  @Column({ nullable: true })
-  reservatId: string;
+  @JoinColumn({ name: 'reservationId' })
+  reservation: Reservation;
 
   @CreateDateColumn()
   createdAt: Date;
+
+  @UpdateDateColumn()
+  updatedAt: Date;
 }

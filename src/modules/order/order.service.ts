@@ -1,5 +1,4 @@
 import {
-  BadRequestException,
   ConflictException,
   forwardRef,
   GoneException,
@@ -16,7 +15,7 @@ import { OrderStatus } from './enums/order-status.enum';
 import { MoviesService } from '../movies/movies.service';
 import { UpdateOrderDto } from './dto/update-order.dto';
 import { PaymentService } from '../payment/payment.service';
-import { ReservatService } from '../reservat/reservat.service';
+import { ReservationService } from '../reservation/reservation.service';
 import { EmailsService } from '../emails/emails.service';
 import { createOrderTemp } from '../emails/templates/create-order.template';
 
@@ -27,13 +26,13 @@ export class OrderService {
     private readonly movieService: MoviesService,
     @Inject(forwardRef(() => PaymentService))
     private readonly paymentService: PaymentService,
-    private readonly reservateService: ReservatService,
+    private readonly reservationService: ReservationService,
     private readonly emailsService: EmailsService,
   ) {}
   async create({ movieId, seats }: CreateOrderDto, user: JwtPayload) {
     const checkOrder = await this.orderRepo.existsBy({
-      movieId,
-      userId: user.id,
+      movie: { id: movieId },
+      user: { id: user.id },
     });
 
     if (checkOrder)
@@ -48,16 +47,16 @@ export class OrderService {
     const showtime = movie.showtimes[0].time.getTime();
     if (showtime < currentDate) throw new GoneException('rwservat is time out');
 
-    const avilableSeats = movie.seats - movie.reservs;
-    if (avilableSeats < seats)
-      throw new BadRequestException(
-        `no more seats, we have a ${movie.seats} seats avilable`,
-      );
+    // const avilableSeats = movie.seats - movie.reservs;
+    // if (avilableSeats < seats)
+    //   throw new BadRequestException(
+    //     `no more seats, we have a ${movie.seats} seats avilable`,
+    //   );
 
     const order = await this.orderRepo.save({
       movieId,
       userId: user.id,
-      total: movie.price * seats,
+      // total: movie.price * seats,
       seats,
       status: OrderStatus.PENDING,
     });
@@ -71,35 +70,16 @@ export class OrderService {
 
   findAll(user: JwtPayload) {
     return this.orderRepo.find({
-      where: { userId: user.id },
-      select: [
-        'id',
-        'seats',
-        'total',
-        'status',
-        'reservatId',
-        'movieId',
-        'createdAt',
-        'paymentId',
-      ],
+      where: { user: { id: user.id } },
+      select: ['id', 'seats', 'total', 'status', 'createdAt', 'paymentId'],
     });
   }
 
   findOne(id: string, userId: string) {
     return this.orderRepo.findOne({
-      where: { id, userId },
+      where: { id, user: { id: userId } },
       relations: ['movie'],
-      select: [
-        'id',
-        'total',
-        'userId',
-        'status',
-        'seats',
-        'reservatId',
-        'movie',
-        'movieId',
-        'paymentId',
-      ],
+      select: ['id', 'total', 'status', 'seats', 'movie', 'paymentId'],
     });
   }
 
@@ -113,10 +93,10 @@ export class OrderService {
     const order = await this.findOne(id, user.id);
     if (!order) throw new NotFoundException('order not found');
 
-    await this.reservateService.remove(order.reservatId, user);
+    await this.reservationService.remove(order.reservation.id, user);
 
     await this.paymentService.cancelPayment(order.paymentId);
 
-    return this.orderRepo.delete({ id, userId: user.id });
+    return this.orderRepo.delete({ id, user: { id: user.id } });
   }
 }

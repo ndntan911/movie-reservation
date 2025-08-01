@@ -39,15 +39,6 @@ export class Movie {
   @JoinColumn({ name: 'categoryId' })
   category: Category;
 
-  @Column()
-  seats: number;
-
-  @Column()
-  price: number;
-
-  @Column({ default: 0 })
-  reservs: number;
-
   @CreateDateColumn()
   createdAt: Date;
 

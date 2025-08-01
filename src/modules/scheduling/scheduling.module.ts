@@ -1,9 +1,9 @@
 import { Module, OnModuleInit } from '@nestjs/common';
 import { SchedulingService } from './scheduling.service';
-import { ReservatModule } from '../reservat/reservat.module';
+import { ReservationModule } from '../reservation/reservation.module';
 
 @Module({
-  imports: [ReservatModule],
+  imports: [ReservationModule],
   providers: [SchedulingService],
 })
 export class SchedulingModule implements OnModuleInit {

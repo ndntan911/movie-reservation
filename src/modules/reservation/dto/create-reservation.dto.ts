@@ -1,6 +1,6 @@
 import { IsNumber, IsUUID } from 'class-validator';
 
-export class CreateReservatDto {
+export class CreateReservationDto {
   @IsUUID()
   movieId: string;
 
