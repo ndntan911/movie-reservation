@@ -29,7 +29,11 @@ export class MoviesService {
     if (!checkCategory) throw new NotFoundException('category not found');
 
     const media = await this.mediaService.create(poster);
-    return this.movieRepo.save({ ...createMovieDto, poster: media });
+    return this.movieRepo.save({
+      ...createMovieDto,
+      poster: media,
+      category: checkCategory,
+    });
   }
 
   findAll(page: number, limit: number, filter: MoviesFilter) {
@@ -40,7 +44,7 @@ export class MoviesService {
       .select([
         'movie.id',
         'movie.title',
-        'movie.discription',
+        'movie.description',
         'movie.poster',
         'movie.showtime',
         'movie.seats',
@@ -58,9 +62,9 @@ export class MoviesService {
         categoryName: filter.category,
       });
 
-    // filter with between tow dates
+    // filter with between two dates
     if (isDateString(filter.showTime)) {
-      // if not provide start Date to serch 'll return current date
+      // if not provide start Date to search 'll return current date
       const currentDate = filter.betweenTime
         ? new Date(filter.betweenTime)
         : new Date().toISOString();
@@ -73,12 +77,12 @@ export class MoviesService {
       });
     }
 
-    // serch with movie name
+    // search with movie name
     if (filter.name) {
       Q.andWhere(
         new Brackets((qb) =>
-          qb.andWhere('LOWER(movie.title) LIKE LOWER(:serch)', {
-            serch: `%${filter.name}%`,
+          qb.andWhere('LOWER(movie.title) LIKE LOWER(:search)', {
+            search: `%${filter.name}%`,
           }),
         ),
       );
@@ -96,7 +100,7 @@ export class MoviesService {
       .select([
         'movie.id',
         'movie.title',
-        'movie.discription',
+        'movie.description',
         'movie.showtime',
         'movie.seats',
         'movie.reservs',

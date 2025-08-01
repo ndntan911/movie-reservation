@@ -7,12 +7,12 @@ import { JwtModule } from '@nestjs/jwt';
 import { MoviesModule } from './modules/movies/movies.module';
 import { CategoryModule } from './modules/category/category.module';
 import { MediaModule } from './modules/media/media.module';
-import { FirebaseModule } from './modules/firebase/firebase.module';
 import { ReservatModule } from './modules/reservat/reservat.module';
 import { PaymentModule } from './modules/payment/payment.module';
 import { OrderModule } from './modules/order/order.module';
 import { EmailsModule } from './modules/emails/emails.module';
 import { SchedulingModule } from './modules/scheduling/scheduling.module';
+import { SupabaseModule } from './modules/supabase/supabase.module';
 
 @Module({
   imports: [
@@ -32,7 +32,7 @@ import { SchedulingModule } from './modules/scheduling/scheduling.module';
     MoviesModule,
     CategoryModule,
     MediaModule,
-    FirebaseModule,
+    SupabaseModule,
     ReservatModule,
     PaymentModule,
     OrderModule,

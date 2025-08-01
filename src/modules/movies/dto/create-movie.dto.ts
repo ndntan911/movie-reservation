@@ -14,7 +14,7 @@ export class CreateMovieDto {
 
   @IsString()
   @Length(2, 255)
-  discription: string;
+  description: string;
 
   @IsUUID()
   categoryId: string;

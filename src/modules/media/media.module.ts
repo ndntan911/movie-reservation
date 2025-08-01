@@ -2,10 +2,10 @@ import { Module } from '@nestjs/common';
 import { MediaService } from './media.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Media } from './entities/media.entity';
-import { FirebaseModule } from '../firebase/firebase.module';
+import { SupabaseModule } from '../supabase/supabase.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Media]), FirebaseModule],
+  imports: [TypeOrmModule.forFeature([Media]), SupabaseModule],
   providers: [MediaService],
   exports: [MediaService],
 })

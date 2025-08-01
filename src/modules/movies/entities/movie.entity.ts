@@ -5,6 +5,7 @@ import {
   CreateDateColumn,
   Entity,
   JoinColumn,
+  ManyToOne,
   OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
@@ -18,25 +19,21 @@ export class Movie {
   @Column()
   title: string;
 
-  @OneToOne(() => Media, {
-    createForeignKeyConstraints: false,
-    onDelete: 'CASCADE',
-  })
-  @JoinColumn()
+  @OneToOne(() => Media, { onDelete: 'SET NULL' })
+  @JoinColumn({ name: 'posterId' })
   poster: Media;
 
   @Column()
-  discription: string;
+  description: string;
 
   @Column()
   showtime: Date;
 
-  @OneToOne(() => Category, { createForeignKeyConstraints: false })
-  @JoinColumn()
+  @ManyToOne(() => Category, (category) => category.movies, {
+    onDelete: 'SET NULL',
+  })
+  @JoinColumn({ name: 'categoryId' })
   category: Category;
-
-  @Column()
-  categoryId: string;
 
   @Column()
   seats: number;

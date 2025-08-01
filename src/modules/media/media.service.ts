@@ -2,19 +2,19 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Media } from './entities/media.entity';
 import { Repository } from 'typeorm';
-import { FirebaseService } from '../firebase/firebase.service';
+import { SupabaseService } from '../supabase/Supabase.service';
 
 @Injectable()
 export class MediaService {
   constructor(
     @InjectRepository(Media) private readonly mediaRepo: Repository<Media>,
-    private readonly firebaseService: FirebaseService,
+    private readonly supabaseService: SupabaseService,
   ) {}
   async create(file: Express.Multer.File) {
     try {
       if (!file)
-        throw new BadRequestException('movie poster shoulde be provide');
-      const upload = await this.firebaseService.uploadFile(file);
+        throw new BadRequestException('movie poster should be provide');
+      const upload = await this.supabaseService.uploadFile(file);
 
       return this.mediaRepo.save({
         cloudId: upload.name,
@@ -28,7 +28,7 @@ export class MediaService {
   }
 
   async delete(fileName: string) {
-    await this.firebaseService.deleteFile(fileName);
+    await this.supabaseService.deleteFile(fileName);
     await this.mediaRepo.delete({ cloudId: fileName });
     return true;
   }

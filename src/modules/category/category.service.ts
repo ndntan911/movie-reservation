@@ -9,27 +9,27 @@ import { Repository } from 'typeorm';
 export class CategoryService {
   constructor(
     @InjectRepository(Category)
-    private readonly catrgoryRepo: Repository<Category>,
+    private readonly categoryRepo: Repository<Category>,
   ) {}
   create(createCategoryDto: CreateCategoryDto) {
-    return this.catrgoryRepo.save(createCategoryDto);
+    return this.categoryRepo.save(createCategoryDto);
   }
 
   findAll() {
-    return this.catrgoryRepo.find({ select: ['id', 'name'] });
+    return this.categoryRepo.find({ select: ['id', 'name'] });
   }
 
   findOne(id: string) {
-    return this.catrgoryRepo.findOne({ where: { id }, select: ['id', 'name'] });
+    return this.categoryRepo.findOne({ where: { id }, select: ['id', 'name'] });
   }
 
   async update(id: string, updateCategoryDto: UpdateCategoryDto) {
     const category = await this.findOne(id);
     if (!category) throw new NotFoundException('category not found');
-    return this.catrgoryRepo.save({ ...category, ...updateCategoryDto });
+    return this.categoryRepo.save({ ...category, ...updateCategoryDto });
   }
 
   remove(id: string) {
-    return this.catrgoryRepo.delete({ id });
+    return this.categoryRepo.delete({ id });
   }
 }
