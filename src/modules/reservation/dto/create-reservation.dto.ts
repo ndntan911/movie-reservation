@@ -1,9 +1,9 @@
-import { IsNumber, IsUUID } from 'class-validator';
+import { IsArray, IsUUID } from 'class-validator';
 
 export class CreateReservationDto {
   @IsUUID()
-  movieId: string;
+  showTimeId: string;
 
-  @IsNumber()
-  seats: number;
+  @IsArray()
+  seatCodes: string[];
 }

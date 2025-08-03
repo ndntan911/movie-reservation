@@ -1,4 +1,3 @@
-import { Movie } from 'src/modules/movies/entities/movie.entity';
 import { User } from 'src/modules/users/entities/user.entity';
 import {
   Column,
@@ -24,23 +23,14 @@ export class Order {
   @JoinColumn({ name: 'userId' })
   user: User;
 
-  @ManyToOne(() => Movie, {
-    onDelete: 'CASCADE',
-  })
-  @JoinColumn({ name: 'movieId' })
-  movie: Movie;
-
   @Column({ enum: OrderStatus, default: OrderStatus.PENDING })
   status: OrderStatus;
 
-  @Column()
+  @Column({ default: 0 })
   total: number;
 
   @Column({ nullable: true })
   paymentId: string;
-
-  @Column()
-  seats: number;
 
   @OneToOne(() => Reservation, {
     onDelete: 'CASCADE',

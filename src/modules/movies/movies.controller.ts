@@ -24,10 +24,11 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { MoviesFilter } from './interfaces/movies-filters.interface';
 
 @Controller('movies')
-@UseGuards(JwtGuard, RoleGuard)
+@UseGuards(RoleGuard)
 export class MoviesController {
   constructor(private readonly moviesService: MoviesService) {}
 
+  @UseGuards(JwtGuard)
   @Post()
   @SetRoles(RoleType.ADMIN, RoleType.SUPER_ADMIN)
   @UseInterceptors(FileInterceptor('poster'))
@@ -56,11 +57,13 @@ export class MoviesController {
     return this.moviesService.findAll(page, limit, filter);
   }
 
+  @UseGuards(JwtGuard)
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.moviesService.findOne(id);
   }
 
+  @UseGuards(JwtGuard)
   @Patch(':id')
   @SetRoles(RoleType.ADMIN, RoleType.SUPER_ADMIN)
   @UseInterceptors(FileInterceptor('poster'))
@@ -68,6 +71,7 @@ export class MoviesController {
     return this.moviesService.update(id, updateMovieDto);
   }
 
+  @UseGuards(JwtGuard)
   @Patch(':id/poster')
   @SetRoles(RoleType.ADMIN, RoleType.SUPER_ADMIN)
   @UseInterceptors(FileInterceptor('poster'))
@@ -78,6 +82,7 @@ export class MoviesController {
     return this.moviesService.updatePoster(id, file);
   }
 
+  @UseGuards(JwtGuard)
   @Delete(':id')
   @SetRoles(RoleType.ADMIN, RoleType.SUPER_ADMIN)
   remove(@Param('id') id: string) {

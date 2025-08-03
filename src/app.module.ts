@@ -14,6 +14,7 @@ import { EmailsModule } from './modules/emails/emails.module';
 import { SchedulingModule } from './modules/scheduling/scheduling.module';
 import { SupabaseModule } from './modules/supabase/supabase.module';
 import { ShowtimeModule } from './modules/showtime/showtime.module';
+import { RoomModule } from './modules/room/room.module';
 
 @Module({
   imports: [
@@ -40,6 +41,7 @@ import { ShowtimeModule } from './modules/showtime/showtime.module';
     OrderModule,
     EmailsModule,
     SchedulingModule,
+    RoomModule,
   ],
 })
 export class AppModule {}

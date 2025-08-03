@@ -31,7 +31,7 @@ export class PaymentService {
 
     const create = await this.stripe.paymentIntents.create({
       payment_method_types: ['card'],
-      amount: order.total * 100,
+      amount: order.total * 100 || 50,
       currency: 'USD',
       metadata: {
         orderId,
@@ -109,30 +109,20 @@ export class PaymentService {
       metadata.userID,
     );
 
-    // create reservat
-    const reservat = await this.reservationService.create(
-      {
-        movieId: order.movie.id,
-        seats: order.seats,
-      },
-      metadata.userId,
-    );
-
     // update order staus
     await this.orderService.update(metadata.orderId, {
       status: OrderStatus.SUCCEED,
-      reservationId: reservat.id,
     });
 
     // send email to user
-    this.emailsService.sendEmail({
-      to: metadata.email,
-      subject: 'success payment',
-      html: SucccessPaymentTemp(
-        metadata.orderId,
-        reservat.movie.id,
-        reservat.seats,
-      ),
-    });
+    // this.emailsService.sendEmail({
+    //   to: metadata.email,
+    //   subject: 'success payment',
+    //   html: SucccessPaymentTemp(
+    //     metadata.orderId,
+    //     order.reservation.movie.id,
+    //     order.reservation.seatCodes,
+    //   ),
+    // });
   }
 }

@@ -9,7 +9,8 @@ import { ReservationModule } from '../reservation/reservation.module';
 export class SchedulingModule implements OnModuleInit {
   constructor(private readonly schedulingService: SchedulingService) {}
   onModuleInit() {
-    // send emails to users for comming reservats
-    this.schedulingService.commingMovie();
+    // send emails to users for coming reservation
+    this.schedulingService.comingMovie();
+    this.schedulingService.reservationCleanup();
   }
 }

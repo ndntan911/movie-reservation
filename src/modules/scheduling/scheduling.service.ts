@@ -7,17 +7,17 @@ import { NotifyReservatTemp } from '../emails/templates/notify-reservat.templete
 @Injectable()
 export class SchedulingService {
   constructor(
-    private readonly reservatService: ReservationService,
+    private readonly reservationService: ReservationService,
     private readonly emailsService: EmailsService,
   ) {}
-  async commingMovie() {
+  async comingMovie() {
     console.log('comming reservats scheduling start ..');
     schedule.scheduleJob('00 * * * *', async () => {
       const currentDate = this.getUtcDate(new Date());
       const showtime = this.getUtcDate(new Date());
       showtime.setHours(showtime.getHours() + 1);
 
-      const reservats = await this.reservatService.findAllOfUsers(
+      const reservats = await this.reservationService.findAllOfUsers(
         showtime,
         currentDate,
       );
@@ -50,5 +50,15 @@ export class SchedulingService {
     );
     const cairoISOString = cairoDateObject.toISOString();
     return new Date(cairoISOString);
+  }
+
+  async reservationCleanup() {
+    console.log('Cleaning up expired reservations...');
+    schedule.scheduleJob('*/5 * * * *', async () => {
+      const expirationMinutes = 5;
+      const cutoff = new Date(Date.now() - expirationMinutes * 60 * 1000);
+
+      await this.reservationService.cleanUpExpiredReservations(cutoff);
+    });
   }
 }

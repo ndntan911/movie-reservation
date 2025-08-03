@@ -12,6 +12,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { MovieType } from '../enums/movie-type.enum';
 
 @Entity()
 export class Movie {
@@ -38,6 +39,13 @@ export class Movie {
   })
   @JoinColumn({ name: 'categoryId' })
   category: Category;
+
+  @Column({
+    type: 'enum',
+    enum: MovieType,
+    nullable: true,
+  })
+  movieType: MovieType;
 
   @CreateDateColumn()
   createdAt: Date;

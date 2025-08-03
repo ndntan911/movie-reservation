@@ -12,7 +12,6 @@ import { Order } from './entities/order.entity';
 import { Repository } from 'typeorm';
 import { JwtPayload } from '../auth/dto/jwt-payload.dto';
 import { OrderStatus } from './enums/order-status.enum';
-import { MoviesService } from '../movies/movies.service';
 import { UpdateOrderDto } from './dto/update-order.dto';
 import { PaymentService } from '../payment/payment.service';
 import { ReservationService } from '../reservation/reservation.service';
@@ -23,16 +22,14 @@ import { createOrderTemp } from '../emails/templates/create-order.template';
 export class OrderService {
   constructor(
     @InjectRepository(Order) private readonly orderRepo: Repository<Order>,
-    private readonly movieService: MoviesService,
     @Inject(forwardRef(() => PaymentService))
     private readonly paymentService: PaymentService,
     private readonly reservationService: ReservationService,
     private readonly emailsService: EmailsService,
   ) {}
-  async create({ movieId, seats }: CreateOrderDto, user: JwtPayload) {
+  async create({ reservationId }: CreateOrderDto, user: JwtPayload) {
     const checkOrder = await this.orderRepo.existsBy({
-      movie: { id: movieId },
-      user: { id: user.id },
+      reservation: { id: reservationId },
     });
 
     if (checkOrder)
@@ -40,30 +37,42 @@ export class OrderService {
         'movie has been in order go to complete payment or canceled',
       );
 
-    const movie = await this.movieService.findOne(movieId);
+    const reservation = await this.reservationService.findOne(
+      reservationId,
+      user,
+    );
 
-    // check if movis show time is't time out
     const currentDate = Date.now();
-    const showtime = movie.showtimes[0].time.getTime();
-    if (showtime < currentDate) throw new GoneException('rwservat is time out');
+    const showtime = reservation.showtime.time.getTime();
+    if (showtime < currentDate) throw new GoneException('showtime is over');
 
-    // const avilableSeats = movie.seats - movie.reservs;
-    // if (avilableSeats < seats)
-    //   throw new BadRequestException(
-    //     `no more seats, we have a ${movie.seats} seats avilable`,
-    //   );
+    // Validate seat
+    const seatCodes = reservation.seatCodes
+      .split(',')
+      .map((code) => code.trim());
+
+    const takenSeats = await this.reservationService.getTakenSeatsForShowtime(
+      reservation.id,
+      reservation.showtime.id,
+      seatCodes,
+    );
+
+    if (takenSeats.length > 0) {
+      throw new ConflictException(
+        `The following seats are already taken: ${takenSeats.join(', ')}`,
+      );
+    }
 
     const order = await this.orderRepo.save({
-      movieId,
-      userId: user.id,
-      // total: movie.price * seats,
-      seats,
+      user: { id: user.id },
       status: OrderStatus.PENDING,
+      reservation: { id: reservation.id },
     });
+    await this.reservationService.addOrder(reservation.id, order.id);
     this.emailsService.sendEmail({
       to: user.email,
       subject: 'create order',
-      html: createOrderTemp(order.id, movie, user.name),
+      html: createOrderTemp(order.id, reservation.showtime.movie, user.name),
     });
     return { msg: 'order is created' };
   }
@@ -71,15 +80,21 @@ export class OrderService {
   findAll(user: JwtPayload) {
     return this.orderRepo.find({
       where: { user: { id: user.id } },
-      select: ['id', 'seats', 'total', 'status', 'createdAt', 'paymentId'],
+      select: ['id', 'total', 'status', 'createdAt', 'paymentId'],
     });
   }
 
   findOne(id: string, userId: string) {
     return this.orderRepo.findOne({
       where: { id, user: { id: userId } },
-      relations: ['movie'],
-      select: ['id', 'total', 'status', 'seats', 'movie', 'paymentId'],
+      select: {
+        id: true,
+        total: true,
+        status: true,
+        paymentId: true,
+        reservation: { id: true },
+      },
+      relations: ['reservation'],
     });
   }
 

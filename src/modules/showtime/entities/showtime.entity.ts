@@ -1,4 +1,6 @@
 import { Movie } from 'src/modules/movies/entities/movie.entity';
+import { Reservation } from 'src/modules/reservation/entities/reservation.entity';
+import { Room } from 'src/modules/room/entities/room.entity';
 import {
   Entity,
   PrimaryGeneratedColumn,
@@ -7,6 +9,7 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   JoinColumn,
+  OneToMany,
 } from 'typeorm';
 
 @Entity()
@@ -23,14 +26,14 @@ export class Showtime {
   @JoinColumn({ name: 'movieId' })
   movie: Movie;
 
-  @Column()
-  price: number;
+  @ManyToOne(() => Room, (room) => room.showtimes, {
+    onDelete: 'CASCADE',
+  })
+  @JoinColumn({ name: 'roomId' })
+  room: Room;
 
-  @Column()
-  seats: number;
-
-  @Column({ default: 0 })
-  reservedSeats: number;
+  @OneToMany(() => Reservation, (reservation) => reservation.showtime)
+  reservations: Reservation[];
 
   @CreateDateColumn()
   createdAt: Date;

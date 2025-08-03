@@ -13,7 +13,7 @@ import { CreatePaymentDto } from './dtos/create-payment.dto';
 import { JwtGuard } from '../auth/guards/jwt.guard';
 import { AuthRequest } from 'src/interfaces/auth-request';
 
-@Controller('payment')
+@Controller('payments')
 export class PaymentController {
   constructor(private readonly paymentService: PaymentService) {}
 

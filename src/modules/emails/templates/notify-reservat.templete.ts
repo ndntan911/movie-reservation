@@ -5,7 +5,7 @@ export const NotifyReservatTemp = (reservat: Reservation) => `
 <h3>remember you about ${reservat.showtime.movie.title} show time</h3>
 <h4>reservat ID: ${reservat.id}</h4>
 <p>show time: ${reservat.showtime.movie.showtimes[0].time}</p>
-<p>seats: ${reservat.seats}</p>
+<p>seats: ${reservat.seatCodes}</p>
 
 <img wedth='50%'  src=${reservat.showtime.movie.poster.url} alt="movie poster"/>
 `;

@@ -11,8 +11,4 @@ export class UpdateOrderDto extends PartialType(CreateOrderDto) {
   @IsString()
   @IsOptional()
   paymentId?: string;
-
-  @IsString()
-  @IsOptional()
-  reservationId?: string;
 }
