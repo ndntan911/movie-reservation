@@ -1,4 +1,4 @@
-## [Movie Reservation System (nestjs)](https://roadmap.sh/projects/movie-reservation-system)
+## Movie Reservation System (nestjs)
 
 #### Build a system that allows users to reserve movie tickets.
 
@@ -86,9 +86,3 @@ STRIPE_WEBHOOK_SK: string;
 EMAIL_USER: string;
 EMAIL_SK: string;
 ```
-
-#
-
-#### With thanks and appreciation to [roadmap.sh](https://roadmap.sh/)
-
-## [Project Page](https://roadmap.sh/projects/movie-reservation-system)
